@@ -4,7 +4,15 @@ let jogadorSprite = [];
 let world = [];
 let currentLevel = 0;
 let bgMusic;
-let dialoguebox = [];
+let dialoguebox;
+let isDialogueActive = false;
+let dialogueIndex = 0;
+let characterDialogueIndex = 0;
+let font;
+let npcs = [];
+let currentNPC = null;
+let apple;
+let appleCount = 10;
 
 function preload() {
   jogadorSprite[0] = loadImage("Sprites/fazendeira.png");
@@ -16,8 +24,10 @@ function preload() {
 
   world[0] = loadImage("Sprites/fundo.png");
   world[1] = loadImage("Sprites/fundo1.png");
-  dialoguebox[0] = loadImage("Sprites/dialogueBoxes/1.png");
+  dialoguebox = loadImage("Sprites/dialogueBoxes/1.png");
+  apple = loadImage("Sprites/apple.png");
   bgMusic = loadSound("Música/beBorn.mp3");
+  font = loadFont("Sprites/dialogueBoxes/PixelifySans.otf");
 }
 
 function setup() {
@@ -25,6 +35,27 @@ function setup() {
   jogador = new Jogador(width / 2, height / 2);
   bgMusic.setVolume(0.1);
   bgMusic.loop();
+
+  fill("#1E4109");
+  textSize(20);
+  textFont(font);
+  npcs.push(new NPC(80,240,1,[`Olá Fazendeira!
+Ah... Você quer saber sobre o que estou 
+vendendo?`,`Bem, eu estou vendendo milho,
+sabia que o milho é a segunda maior cultura 
+exportada do Brasil?`,`Legal, né?`,
+`Oh! Você está vendendo maçãs?
+Que incrível! Eu quero uma!`],[`Um milho por dia afasta os médicos!...
+Ou eram maçãs?`]));
+  npcs.push(new NPC(480, 240, 1, [`Oi! Você quer saber como pesquei esses? 
+Primeiro eu fui a cidade, sabe?
+comprar uma vara de pescar boa!`,`Eu sou do campo, então 
+sou meio dependente de ir na cidade 
+uma hora outra para comprar iscas e linha!`,`Isso também é importante, iscas boas 
+e uma linha forte. Além de claro pescar 
+somente em locais permitidos!`, `O resto depende de sua habilidade de pesca.
+Ah! Você está vendendo maçãs! Quero uma!`], [`Peixe é rico em omêga três! 
+Gordura saúdavel!`], 100));
 }
 
 function draw() {
@@ -32,14 +63,46 @@ function draw() {
   background(220);
   noSmooth(); //´para não suavizar a imagem de pixel art pois perde a qualidade
   image(world[currentLevel], 0, 0, 600, 400);
+  image(apple, 15, 15, 30, 30);
 
   jogador.update();
   jogador.draw();
-  image(dialoguebox[0], 50, 250);
+
+  if (isDialogueActive && currentNPC) {
+    image(dialoguebox, 50, 250);
+    text(currentNPC.getCurrentDialogue()[dialogueIndex], 100, 300);
+  }
+  if (!isDialogueActive && getInteractableNPC()) {
+    text("aperte E!", jogador.x, jogador.y - 30);
+  }
+  text(appleCount + " maçãs", 55, 38);
 }
 
 function keyPressed() {
-  teclaPressionada[key.toLowerCase()] = true; // para evitar erros quando uma letra maiuscula é apertada
+  const keyLower = key.toLowerCase();
+  teclaPressionada[keyLower] = true;
+
+  if (keyLower === "e") {
+    if (isDialogueActive === false) {
+      currentNPC = getInteractableNPC();
+      if (currentNPC) {
+        isDialogueActive = true;
+        dialogueIndex = 0;
+      }
+    } else if (isDialogueActive) {
+      
+      dialogueIndex++;
+      if (dialogueIndex >= currentNPC.getCurrentDialogue().length) {
+        isDialogueActive = false;
+        if (!currentNPC.alreadyTalked) {
+          currentNPC.alreadyTalked = true;
+          appleCount = Math.max(appleCount - 1, 0);
+        }
+
+        currentNPC = null;
+      }
+    }
+  }
 }
 
 function keyReleased() {
@@ -72,6 +135,7 @@ class Jogador {
   }
 
   update() {
+    if (!isDialogueActive) {
     let mvmt = createVector(0, 0);
 
     // movimento e a inversão do JogadorSprite
@@ -88,10 +152,8 @@ class Jogador {
       this.isJumping = true;
       this.canJump = false; //impede que o jogador faça outros pulos no ar.
     }
-    if (teclaPressionada.e) {
-      dialogue();
-    }
-
+    
+    
     this.jumpVelocity += this.gravity;
     this.y += this.jumpVelocity;
 
@@ -105,7 +167,9 @@ class Jogador {
     this.x += mvmt.x;
     this.y += mvmt.y;
     console.log(this.x);
-
+    
+    
+    
     if (this.x >= 605) {
       // fim do canvas direito
       if (currentLevel < world.length - 1) {
@@ -148,7 +212,7 @@ class Jogador {
       }
     }
   }
-
+  }
   draw() {
     push();
     translate(this.x, this.y);
@@ -166,10 +230,32 @@ class Jogador {
     pop();
   }
 }
-function dialogue() {
-  if (currentLevel === 1) {
-    if (jogador.x >= 40 && jogador.x <= 200) {
-      console.log("hi");
+
+class NPC {
+  constructor(x,y,level,firstDialogue,secondDialogue,interactionRange = 100) {
+    this.x = x;
+    this.y = y;
+    this.level = level;
+    this.dialogue = firstDialogue;
+    this.secondDialogue = secondDialogue;
+    this.range = interactionRange;
+    this.alreadyTalked = false;
+  }
+  isPlayerInRange(jogadorX, jogadorY) {
+    return dist(jogadorX, jogadorY, this.x, this.y) < this.range;
+  }
+  getCurrentDialogue() { //Impede diálogos repetidos
+    if (this.alreadyTalked) {
+      return this.secondDialogue;
+    } else {
+      return this.dialogue;
     }
   }
+}
+
+function getInteractableNPC() { //encontrar o NPC que está próximo do jogador e pode ser interagido.
+  return npcs.find(
+    (npc) =>
+      npc.level === currentLevel && npc.isPlayerInRange(jogador.x, jogador.y)
+  );
 }
