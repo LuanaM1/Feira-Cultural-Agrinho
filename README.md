@@ -1,5 +1,6 @@
 # Projeto "Feira Cultural" 
 Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo onde o jogador assume o papel de uma fazendeira vendedora de maçãs que está em uma feira cultural! O objetivo é vender as suas maçãs e conversar com os NPCS para conhecer mais sobre a relação campo-cidade, festejando a mesma! 
+
 ![pixil-gif-drawing (1)](https://github.com/user-attachments/assets/13adc2b7-7acc-4e19-a9e7-47fb38559b5a)
 
 ## Objetivo do Projeto
