@@ -103,6 +103,7 @@ para sobreviver, então devemos celebrar.`,
 
 function setup() {
   createCanvas(600, 400);
+  
   player = new Player(width / 2, height / 2);
   bgMusic.setVolume(0.1);
   startMusic.setVolume(0.1);
@@ -115,6 +116,7 @@ function setup() {
 }
 
 function draw() {
+  
   noSmooth();
   if (gameState === "inicio") {
     drawStartScreen();
@@ -131,6 +133,7 @@ function draw() {
   drawHUD(); //UI
   player.draw();
   player.update();
+
 
   if (gameState === "finalizando") {
     final();
