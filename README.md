@@ -3,12 +3,12 @@ Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo 
 
 
 
-## Objetivo do Projeto
+## Objetivo do Projeto 🏙️🌳
 - Conhecer mais sobre diversas culturas de plantação;
 - Promover a relação campo-cidade;
 - Reconhecer a interdependência do campo-cidade;
   
-## Como jogar:
+## Como jogar: 🕹️
 **Controles**
  - Teclas "W" para pular, "A" e "D" para andar.
  - Aperte "E" para conversar com NPCS
@@ -20,7 +20,7 @@ Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo 
   **[Be Born de Tally Hall](https://www.youtube.com/watch?v=TIt4i8AmryQ)**
   **[Hymn For Scarecrow de Tally Hall](https://www.youtube.com/watch?v=rfUeWe7u364)**
   
-## Autoria
+## Autoria ✒️
 Projeto desenvolvido por Luana Malaquias
 
 ![gatinho.gif](https://github.com/user-attachments/assets/bd2566d3-f58d-4705-b0cb-9fd1261c6427)
