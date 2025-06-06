@@ -1,6 +1,10 @@
-html, body {
-  margin: 0;
+html,
+body {
+  margin-top: 5%;
   padding: 0;
+  background-color: #2F441D;
+  place-self: center;
+  
 }
 canvas {
   display: block;
