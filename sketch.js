@@ -35,6 +35,7 @@ let currentEndingDialogue = 0;
 let isEndingDialogueActive = false;
 
 //Audio e assets
+let startMusic;
 let bgMusic;
 let font;
 
@@ -96,6 +97,7 @@ para sobreviver, então devemos celebrar.`,
 
   //aúdio e fonte de texto
   bgMusic = loadSound("Música/beBorn.mp3");
+  startMusic = loadSound("Música/hymnforscarecrow.mp3");
   font = loadFont("Sprites/dialogueBoxes/PixelifySans.otf");
 }
 
@@ -103,8 +105,8 @@ function setup() {
   createCanvas(600, 400);
   player = new Player(width / 2, height / 2);
   bgMusic.setVolume(0.1);
-  bgMusic.loop();
-
+  startMusic.setVolume(0.1);
+  startMusic.loop();
   fill("#1E4109");
   textSize(20);
   textFont(font);
@@ -156,6 +158,8 @@ function keyPressed() {
   }
   if(gameState==="instruction2" && keyLower === "e") {
     gameState = "jogando";
+    startMusic.stop();
+    bgMusic.loop();
     return
   }
   if (
@@ -169,12 +173,14 @@ function keyPressed() {
       isEndingDialogueActive = false;
       gameState = "final";
     }
+    
     return;
   }
 
   if (decision) {
     if (keyLower === "s") {
       decisionChoice("sim");
+      startMusic.loop();
       return;
     }
   }
@@ -390,6 +396,7 @@ function decisionChoice(choice) {
   decision = false;
 }
 function final() {
+  bgMusic.stop();
   image(discourse[currentEndingImage], 0, 0, width, height);
   let timeElapsed = (millis() - endingStartTime) / 1000;
   if (timeElapsed > 1 && currentEndingImage === 0) {
