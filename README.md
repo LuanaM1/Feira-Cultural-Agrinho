@@ -15,8 +15,8 @@ Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo 
 - Desenvolvido com **[p5.js](https://p5js.org/)**
 - Assets/Sprites artísticos originais
 - Músicas usadas:
-  **Be Born de Tally Hall (https://www.youtube.com/watch?v=TIt4i8AmryQ)**
-  **Hymn For Scarecrow de Tally Hall (https://www.youtube.com/watch?v=rfUeWe7u364)**
+  **[Be Born de Tally Hall](https://www.youtube.com/watch?v=TIt4i8AmryQ)**
+  **[Hymn For Scarecrow de Tally Hall](https://www.youtube.com/watch?v=rfUeWe7u364)**
   
 ## Autoria
 Projeto desenvolvido por Luana Malaquias
