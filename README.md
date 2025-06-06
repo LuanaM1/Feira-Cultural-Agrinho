@@ -10,7 +10,7 @@ Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo 
 **Controles**
  - Teclas "W" para pular, "A" e "D" para andar.
  - Aperte "E" para conversar com NPCS
- - 
+
 ## Créditos
 - Desenvolvido com **[p5.js](https://p5js.org/)**
 - Assets/Sprites artísticos originais
