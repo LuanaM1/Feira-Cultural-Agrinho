@@ -20,4 +20,7 @@ Esse projeto foi desenvonvido utilizando a biblioteca P5.js, para criar um jogo 
   
 ## Autoria
 Projeto desenvolvido por Luana Malaquias
+
+![gatinho.gif](https://github.com/user-attachments/assets/bd2566d3-f58d-4705-b0cb-9fd1261c6427)
+
   
