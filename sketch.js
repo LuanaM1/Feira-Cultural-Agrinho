@@ -1,12 +1,14 @@
+//---Variáveis Globais---
+
 //controle e jogador
 let player;
 let keysPressed = {};
 let playerSprite = [];
 
 //Mundo, níveis, inicio e final
-let world = [];
+let world = []; 
 let currentLevel = 0;
-let decoration = [];
+let decoration = []; // Elementos decorativos por nível
 let endimage;
 let startImage = [];
 let startButton;
@@ -14,24 +16,24 @@ let startButton;
 let npcs = [];
 let currentNPC = null;
 let dialoguebox = [];
-let isDialogueActive = false;
+let isDialogueActive = false; // Flag de diálogo ativo
 let dialogueIndex = 0;
 let characterDialogueIndex = 0;
 
 //mecanicas
-let apple;
-let appleCount = 10;
+let apple; // Sprite da maçã
+let appleCount = 10; // Por que 10 maçãs? É um número balanceado para gameplay!
 let applesSold = 0;
-let decision = false;
+let decision = false; // Flag de decisão final ativa
 let discourse = [];
 
 //estado do jogo
 let instructionIndex = 0;
-let gameState = "inicio";
+let gameState = "inicio"; // Estados: inicio, instruction1, instruction2, jogando, finalizando, final
 let endingStartTime = 0;
 let currentEndingImage = 0;
-let endingDialogues = [];
-let currentEndingDialogue = 0;
+let endingDialogues = []; // Textos do discurso final
+let currentEndingDialogue = 0; // Índice do diálogo final
 let isEndingDialogueActive = false;
 
 //Audio e assets
@@ -39,6 +41,7 @@ let startMusic;
 let bgMusic;
 let font;
 
+//---Pré-carregamento de Assets---
 function preload() {
   //Sprites do jogador
   playerSprite[0] = loadImage("Sprites/fazendeira.png");
@@ -49,11 +52,9 @@ function preload() {
   playerSprite[5] = loadImage("Sprites/anim1/jumping.png");
 
   //sprites do mundo
-  world[0] = loadImage("Sprites/fundo.png");
-  world[1] = loadImage("Sprites/fundo1.png");
-  world[2] = loadImage("Sprites/fundo2.png");
-  world[3] = loadImage("Sprites/fundo3.png");
-  world[4] = loadImage("Sprites/fundo4.png");
+   for (let i = 0; i <= 4; i++) {
+    world.push(loadImage(`Sprites/fundo${i}.png`));
+  }
 
   //sprites de dialogo
   dialoguebox[0] = loadImage("Sprites/dialogueBoxes/1.png");
@@ -63,19 +64,14 @@ function preload() {
   apple = loadImage("Sprites/apple.png");
 
   //decoração de mundo
-  decoration[0] = loadImage("Sprites/bird.gif");
-  decoration[1] = loadImage("Sprites/lilica.png");
-  decoration[2] = loadImage("Sprites/cat.png");
-  decoration[3] = loadImage("Sprites/person.png");
-  decoration[4] = loadImage("Sprites/person2.png");
-  decoration[5] = loadImage("Sprites/kid.png");
-  decoration[6] = loadImage("Sprites/kid.png");
-  decoration[7] = loadImage("Sprites/person3.png");
-  decoration[8] = loadImage("Sprites/person4.png");
-  decoration[9] = loadImage("Sprites/person5.png");
-  discourse[0] = loadImage("Sprites/palco.png");
-  discourse[1] = loadImage("Sprites/palco2.png");
-
+   const decoracoes = [
+    "bird.gif", "lilica.png", "cat.png", "person.png", "person2.png", 
+    "kid.png", "person3.png", "person4.png", "person5.png", "palco.png", "palco2.png"
+  ];
+  for (let img of decoracoes) {
+    decoration.push(loadImage(`Sprites/${img}`));
+  }
+  
   //tela final/inicial
   endimage = loadImage("Sprites/endimage.png");
   startImage[0] = loadImage("Sprites/startimage.png");
@@ -95,23 +91,26 @@ para sobreviver, então devemos celebrar.`,
     `Vamos celebrar juntos a nossa conexão!`,
   ];
 
-  //aúdio e fonte de texto
+  //aúdio 
   bgMusic = loadSound("Música/beBorn.mp3");
   startMusic = loadSound("Música/hymnforscarecrow.mp3");
   font = loadFont("Sprites/dialogueBoxes/PixelifySans.otf");
 }
 
+//---Configurações essenciais---
 function setup() {
   createCanvas(600, 400);
-  
-  player = new Player(width / 2, height / 2); //Criação da class Player
+  player = new Player(width / 2, height / 2); 
+  //configuração de aúdio
   bgMusic.setVolume(0.1);
   startMusic.setVolume(0.1);
   startMusic.loop();
+  //configuração de texto
   fill("#1E4109");
   textSize(20);
   textFont(font);
 
+  //criação de NPCs
   createNpcs(); 
 }
 
@@ -128,13 +127,16 @@ function draw() {
     drawInstruction2();
     return
   }
+
+  //Renderização do jogo!
+  
   background(220);
   drawWorld(); //fundo e decorações
   drawHUD(); //UI
   player.draw(); //desenha o player
   player.update();
 
-
+  //Checagem de estados
   if (gameState === "finalizando") { //checa se o player já está na parte final, finalizando
     final();
     return;
@@ -150,10 +152,13 @@ function draw() {
   handleDialogue(); //dialogos
 }
 
+//---Controles do Teclado---
 function keyPressed() {
   const keyLower = key.toLowerCase(); 
 
-  keysPressed[keyLower] = true;
+  keysPressed[keyLower] = true; 
+
+   // --- Gerenciamento de estados! ---
   
   if(gameState === "instruction1" && keyLower === "e") { //se "e" pressionado em instruction1 ir para instruction2
     gameState = "instruction2"
@@ -192,7 +197,7 @@ function keyPressed() {
     decisionChoice("não");
     return;
   }
-
+ //DIÁLOGOS 
   if (keyLower === "e") {
     if (isDialogueActive === false) {
       currentNPC = getInteractableNPC();
@@ -220,39 +225,43 @@ function keyReleased() {
   const keyLower = key.toLowerCase();
   delete keysPressed[keyLower];
   if (keyLower === "w") {
-    player.canJump = true;
+    player.canJump = true; // Reset do pulo, melhora responsividade
   }
 }
 
+//---CLASSES E FUNÇÕES---
 class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
     this.speed = 5; 
-    this.isFlipped = false; //checa se imagem está invertida 
-    this.currentFrame = 0;
+    this.isFlipped = false; //para flip horizontal
+    this.currentFrame = 0; //frame atual da animação
     this.animationCounter = 0;
     this.animationSpeed = 8; //quanto maior o numero mais lento a troca de frames!
     this.isMoving = false;
     this.isJumping = false;
-    this.jumpForce = -12;
+    this.jumpForce = -12; //força inicial do pulo
     this.gravity = 0.6;
     this.jumpVelocity = 0;
-    this.groundY = y;
-    this.canJump = true; //impede pulos infinitos
+    this.groundY = y; //posição inicial
+    this.canJump = true; //Previne pulos infinitos
     this.IsIdle = true;
     this.idleFrame = 0;
     this.animationIdleSpeed = 20;
   }
 
   update() {
+    //Checagem de estados do jogo
     if (gameState === "fim") {
       return;
     }
+    
+    //---Controle de Movimento---
     if (!isDialogueActive && !decision) {
       let mvmt = createVector(0, 0);
 
-      // movimento e a inversão do JogadorSprite
+      //Movimento e a inversão do JogadorSprite
       if (keysPressed.a) {
         mvmt.x -= 1;
         this.isFlipped = true;
@@ -261,15 +270,17 @@ class Player {
         mvmt.x += 1;
         this.isFlipped = false;
       }
+      //Física de Pulo
       if (keysPressed.w && this.canJump && !this.isJumping) {
         this.jumpVelocity = this.jumpForce;
         this.isJumping = true;
         this.canJump = false; //impede que o jogador faça outros pulos no ar.
       }
-
+       // Aplicação de Gravidade
       this.jumpVelocity += this.gravity;
       this.y += this.jumpVelocity;
-
+      
+      // Detecção de Chão
       if (this.y >= this.groundY) {
         this.y = this.groundY;
         this.jumpVelocity = 0;
@@ -280,16 +291,15 @@ class Player {
       this.x += mvmt.x;
       this.y += mvmt.y;
 
-      if (this.x >= 605) {
-        // fim do canvas direito
-        if (currentLevel < world.length - 1) {
+      if (this.x >= 605) { // 605 = width + 5 (margem para troca de nível)
+       if (currentLevel < world.length - 1) {
           currentLevel++;
           this.x = 0;
           this.y = height / 2;
         } else {
           this.x = 605 - this.speed;
           if (currentLevel === 4) {
-            this.x = 605 - this.speed;
+            this.x = 605 - this.speed; //605 evita que o jogador ative a decisão repetidamente
             decision = true;
           }
         }
@@ -336,13 +346,13 @@ class Player {
       scale(-1, 1); //inverte se necessario
     }
     noSmooth();
-
+  // Seleção de sprites baseada no estado do jogador
     if (this.isJumping) {
       image(playerSprite[5], -45, 0, 90, 100);
     } else if (this.isMoving) {
       image(playerSprite[this.currentFrame + 2], -45, 0, 90, 100);
     } else {
-      image(playerSprite[this.idleFrame], -45, 0, 90, 100); //Animação para quando o jogador não esta se movendo.
+      image(playerSprite[this.idleFrame], -45, 0, 90, 100); 
     }
     pop();
   }
@@ -353,9 +363,9 @@ class NPC {
     x,
     y,
     level,
-    firstDialogue,
-    secondDialogue,
-    interactionRange = 100
+    firstDialogue, // Diálogo antes de vender
+    secondDialogue, // Diálogo após venda
+    interactionRange = 100 // Raio de interação em pixels
   ) {
     this.x = x;
     this.y = y;
