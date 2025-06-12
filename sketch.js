@@ -52,9 +52,11 @@ function preload() {
   playerSprite[5] = loadImage("Sprites/anim1/jumping.png");
 
   //sprites do mundo
-   for (let i = 0; i <= 4; i++) {
-    world.push(loadImage(`Sprites/fundo${i}.png`));
-  }
+   world[0] = loadImage("Sprites/fundo.png");
+  world[1] = loadImage("Sprites/fundo1.png");
+  world[2] = loadImage("Sprites/fundo2.png");
+  world[3] = loadImage("Sprites/fundo3.png");
+  world[4] = loadImage("Sprites/fundo4.png");
 
   //sprites de dialogo
   dialoguebox[0] = loadImage("Sprites/dialogueBoxes/1.png");
@@ -64,13 +66,18 @@ function preload() {
   apple = loadImage("Sprites/apple.png");
 
   //decoração de mundo
-   const decoracoes = [
-    "bird.gif", "lilica.png", "cat.png", "person.png", "person2.png", 
-    "kid.png", "person3.png", "person4.png", "person5.png", "palco.png", "palco2.png"
-  ];
-  for (let img of decoracoes) {
-    decoration.push(loadImage(`Sprites/${img}`));
-  }
+   decoration[0] = loadImage("Sprites/bird.gif");
+  decoration[1] = loadImage("Sprites/lilica.png");
+  decoration[2] = loadImage("Sprites/cat.png");
+  decoration[3] = loadImage("Sprites/person.png");
+  decoration[4] = loadImage("Sprites/person2.png");
+  decoration[5] = loadImage("Sprites/kid.png");
+  decoration[6] = loadImage("Sprites/kid.png");
+  decoration[7] = loadImage("Sprites/person3.png");
+  decoration[8] = loadImage("Sprites/person4.png");
+  decoration[9] = loadImage("Sprites/person5.png");
+  discourse[0] = loadImage("Sprites/palco.png");
+  discourse[1] = loadImage("Sprites/palco2.png");
   
   //tela final/inicial
   endimage = loadImage("Sprites/endimage.png");
