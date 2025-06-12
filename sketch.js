@@ -411,7 +411,8 @@ function decisionChoice(choice) {
     endingStartTime = millis();
     currentEndingImage = 0;
   } else {
-    player.x = 680 - player.speed - 5;
+    //Reposiciona o jogador para fora da borda
+    player.x = width - 50;  // 50px da borda direita
   }
   decision = false;
 }
