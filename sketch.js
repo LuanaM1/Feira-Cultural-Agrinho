@@ -264,11 +264,10 @@ class Player {
       return;
     }
     
-    //---Controle de Movimento---
+    //Controle de Movimento
     if (!isDialogueActive && !decision) {
       let mvmt = createVector(0, 0);
 
-      //Movimento e a inversão do JogadorSprite
       if (keysPressed.a) {
         mvmt.x -= 1;
         this.isFlipped = true;
