@@ -104,7 +104,7 @@ para sobreviver, então devemos celebrar.`,
 function setup() {
   createCanvas(600, 400);
   
-  player = new Player(width / 2, height / 2);
+  player = new Player(width / 2, height / 2); //Criação da class Player
   bgMusic.setVolume(0.1);
   startMusic.setVolume(0.1);
   startMusic.loop();
@@ -112,17 +112,17 @@ function setup() {
   textSize(20);
   textFont(font);
 
-  createNpcs();
+  createNpcs(); 
 }
 
 function draw() {
   
-  noSmooth();
+  noSmooth(); //Sem isso, as imagens pixelizadas ficariam borradas!
   if (gameState === "inicio") {
-    drawStartScreen();
+    drawStartScreen(); //Tela de ínicio
     return;
   } else if (gameState === "instruction1"){
-    drawInstruction1();
+    drawInstruction1(); 
     return
   } else if(gameState === "instruction2"){
     drawInstruction2();
@@ -131,31 +131,31 @@ function draw() {
   background(220);
   drawWorld(); //fundo e decorações
   drawHUD(); //UI
-  player.draw();
+  player.draw(); //desenha o player
   player.update();
 
 
-  if (gameState === "finalizando") {
+  if (gameState === "finalizando") { //checa se o player já está na parte final, finalizando
     final();
     return;
   }
   if (gameState === "final") {
-    drawFinalScreen();
+    drawFinalScreen(); 
     return;
   }
   if (decision) {
-    showDecision();
+    showDecision();  //checa se o player quer continuar para o final
     return;
   }
   handleDialogue(); //dialogos
 }
 
 function keyPressed() {
-  const keyLower = key.toLowerCase();
+  const keyLower = key.toLowerCase(); 
 
   keysPressed[keyLower] = true;
   
-  if(gameState === "instruction1" && keyLower === "e") {
+  if(gameState === "instruction1" && keyLower === "e") { //se "e" pressionado em instruction1 ir para instruction2
     gameState = "instruction2"
     return
   }
@@ -228,11 +228,11 @@ class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.speed = 5;
-    this.isFlipped = false;
+    this.speed = 5; 
+    this.isFlipped = false; //checa se imagem está invertida 
     this.currentFrame = 0;
     this.animationCounter = 0;
-    this.animationSpeed = 8; //quanto maior o numero mais lento a troca de frame!
+    this.animationSpeed = 8; //quanto maior o numero mais lento a troca de frames!
     this.isMoving = false;
     this.isJumping = false;
     this.jumpForce = -12;
